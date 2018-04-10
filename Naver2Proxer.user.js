@@ -5,6 +5,7 @@
 // @include     https://proxer.me/chapter/*
 // @supportURL  
 // @updateURL   https://github.com/dravorle/Naver2Proxer/raw/master/Naver2Proxer.user.js
+// @version     1.1: Small fixes
 // @version     1.0: First Release
 // @require     https://proxer.me/templates/proxer14/js/jquery-1.9.1.min.js
 // @require     https://proxer.me/templates/proxer14/js/jquery-ui-1.10.3.custom.min.js
@@ -24,12 +25,6 @@ $(document).ajaxSuccess( function() {
 });
 
 function run() {
-    /*
-    $('[data-ajax="true"]').on('click', function(){
-        setTimeout(run, 1500);
-    });
-    */
-    
     if( $(".inner").text().indexOf("Dieses Kapitel ist leider noch nicht verfügbar :/") > -1 ) {
         console.log( "[Naver2Proxer] Kein Chapter verfügbar." );
         return;
@@ -40,9 +35,7 @@ function run() {
         console.log( "[Naver2Proxer] Offizielles Chapter entdeckt." );
         //Funktion des Links verändern, bei OnClick Webtoons-Seite laden und in Proxer-Style auf der Website anzeigen
         $("<script> pages = []; baseurl = '"+getCurrentLink().split("?")[0]+"'; current_page = 1; serverurl = ''; nextChapter = '"+$("a.menu:contains('Nächstes Kapitel')").attr("href")+"'; </script>").appendTo("head");
-        //$('<script type="text/javascript" src="CustomSlide.js"></script>').appendTo("head");
-        //$('<script type="text/javascript" src="CustomLongstrip.js"></script>').appendTo("head");
-
+        
         $("#chapter_next").on("click", handleNaverClick );
         
         if( location.href.indexOf("?startRead") > -1 ) {
