@@ -6,7 +6,7 @@
 // @supportURL  
 // @updateURL   https://github.com/dravorle/Naver2Proxer/raw/master/Naver2Proxer.user.js
 // @version     1.0: First Release
-// @require     https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js
+// @require     https://proxer.me/templates/proxer14/js/jquery-1.9.1.min.js
 // @require     https://proxer.me/templates/proxer14/js/jquery-ui-1.10.3.custom.min.js
 // @require     https://proxer.me/templates/proxer14/js/jquery.plugins.js?3
 // @require     CustomSlide.js
