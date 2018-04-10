@@ -5,6 +5,7 @@
 // @include     https://proxer.me/chapter/*
 // @supportURL  https://proxer.me/forum/283/384751
 // @updateURL   https://github.com/dravorle/Naver2Proxer/raw/master/Naver2Proxer.user.js
+// @version     1.2: Fixed Event Handling on Chapter-Page
 // @version     1.1: Small fixes
 // @version     1.0: First Release
 // @require     https://proxer.me/templates/proxer14/js/jquery-1.9.1.min.js
@@ -15,6 +16,7 @@
 // @connect     webtoons.com
 // @connect     webtoon-phinf.pstatic.net
 // @grant       GM_xmlhttpRequest
+// @grant       unsafeWindow
 // @namespace   dravorle.proxer.me
 // @run-at      document-end
 // ==/UserScript==
@@ -25,6 +27,8 @@ $(document).ajaxSuccess( function() {
 });
 
 function run() {
+    unsafeWindow.jQuery( ".inner a.menu[data-ajax]" ).off("click"); //Vorerst muss unsafeWindow genutzt werden, da ich Standard-Eventhandler unsubscriben muss, eine Funktion dafür wurde angefragt, bis dahin muss allerdings damit vorlieb genommen werden
+    
     if( $(".inner").text().indexOf("Dieses Kapitel ist leider noch nicht verfügbar :/") > -1 ) {
         console.log( "[Naver2Proxer] Kein Chapter verfügbar." );
         return;
@@ -37,6 +41,17 @@ function run() {
         $("<script> pages = []; baseurl = '"+getCurrentLink().split("?")[0]+"'; current_page = 1; serverurl = ''; nextChapter = '"+$("a.menu:contains('Nächstes Kapitel')").attr("href")+"'; </script>").appendTo("head");
         
         $("#chapter_next").on("click", handleNaverClick );
+        
+        unsafeWindow.jQuery(document).off("keydown"); //Vorerst muss unsafeWindow genutzt werden, da ich Standard-Eventhandler unsubscriben muss, eine Funktion dafür wurde angefragt, bis dahin muss allerdings damit vorlieb genommen werden
+        //removeEventHandler( document, "keydown" ); //Funktion von Enes angefragt
+        
+        $(document).on("keydown", function(e) {
+            var code = e.keyCode || e.which;
+            if (code === 39 || code === 68)
+            {
+                handleNaverClick(e);
+            }
+        });
         
         if( location.href.indexOf("?startRead") > -1 ) {
             $("#chapter_next").trigger("click");
