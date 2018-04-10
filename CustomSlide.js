@@ -125,7 +125,7 @@ function changePageSlide(page, init) {
             }
         }
 
-        $('#chapterImage').css('opacity', '0');
+        //$('#chapterImage').css('opacity', '0');
         $('#chapterImage').attr('src', phpUrldecode(pages[page - 1][0]));
 
         resizePageSlide(page - 1);

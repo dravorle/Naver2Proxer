@@ -26,7 +26,7 @@ function initLong() {
     $('#reader').html('<a href="javascript:void(0);">' + images + '</a>');
 
     $("#allPages a, #curPages a").on("click", function() {
-        changePageSlide( $(this).attr("data-p"), false );
+        changePageLong( $(this).attr("data-p"), false );
     });
     
     $("#reader img").on("click", function() {
