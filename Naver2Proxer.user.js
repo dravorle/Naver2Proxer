@@ -5,6 +5,7 @@
 // @include     https://proxer.me/chapter/*
 // @supportURL  https://proxer.me/forum/283/384751
 // @updateURL   https://github.com/dravorle/Naver2Proxer/raw/master/Naver2Proxer.user.js
+// @version     1.2.1: Fixed Pages loading more than once
 // @version     1.2: Fixed Event Handling on Chapter-Page
 // @version     1.1: Small fixes
 // @version     1.0: First Release
@@ -47,7 +48,7 @@ function run() {
         
         $(document).on("keydown", function(e) {
             var code = e.keyCode || e.which;
-            if (code === 39 || code === 68)
+            if ( code === 39 || code === 68 )
             {
                 handleNaverClick(e);
             }
@@ -62,6 +63,10 @@ function run() {
 
 function handleNaverClick(e) {
     e.preventDefault();
+    
+    if( $("#loading").length > 0 ) {
+        return;
+    }
     
     $("body").append('<div id="loading" class="customBubble" style="display:inline;"></div>');
     
