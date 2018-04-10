@@ -15,8 +15,8 @@ function initLong() {
     var list = '<ul id="listPages">';
     var images = '';
     for (i = 0; i < pages.length; i++) {
-        list += '<li><a class="_pageLink" data-p="'+(i + 1)+'" href="javascript:;>Page ' + (i + 1) + '</a></li>';
-        $('#curPages').append('<div class="number number_' + i + '" style="display:none;"><a class="_pageLink" data-p="'+(i + 1)+'" href="javascript:void(0)">' + (i + 1) + '</a></div> ');
+        list += '<li><a data-p="'+(i + 1)+'" href="javascript:;>Page ' + (i + 1) + '</a></li>';
+        $('#curPages').append('<div class="number number_' + i + '" style="display:none;"><a data-p="'+(i + 1)+'" href="javascript:void(0)">' + (i + 1) + '</a></div> ');
 
         images += '<img class="unloaded" style="display:block;" src="/templates/proxer14/images/bg60.png" id="chapterImage' + i + '" width="' + Math.min(pages[i][2], $('#reader').width()) + '" height="' +
                 Math.round(Math.min(pages[i][2], $('#reader').width()) * pages[i][1] / pages[i][2]) + '" />';
@@ -25,7 +25,7 @@ function initLong() {
     $('#allPages').html(list);
     $('#reader').html('<a href="javascript:void(0);">' + images + '</a>');
 
-    $("#allPages ._pageLink, $curPages ._pageLink").on("click", function() {
+    $("#allPages a, #curPages a").on("click", function() {
         changePageSlide( $(this).attr("data-p"), false );
     });
     
