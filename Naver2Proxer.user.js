@@ -5,6 +5,7 @@
 // @include     https://proxer.me/chapter/*
 // @supportURL  https://proxer.me/forum/283/384751
 // @updateURL   https://github.com/dravorle/Naver2Proxer/raw/master/Naver2Proxer.user.js
+// @version     1.3: Fixed Event assigning for Custom Reader Functions
 // @version     1.2.1: Fixed Pages loading more than once
 // @version     1.2: Fixed Event Handling on Chapter-Page
 // @version     1.1: Small fixes
