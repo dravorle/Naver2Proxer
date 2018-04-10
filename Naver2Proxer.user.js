@@ -3,7 +3,7 @@
 // @author      Dravorle
 // @description Ermöglicht es weiterhin auch lizenzierte Naver-Manga direkt in Proxer zu lesen
 // @include     https://proxer.me/chapter/*
-// @supportURL  
+// @supportURL  https://proxer.me/forum/283/384751
 // @updateURL   https://github.com/dravorle/Naver2Proxer/raw/master/Naver2Proxer.user.js
 // @version     1.1: Small fixes
 // @version     1.0: First Release
