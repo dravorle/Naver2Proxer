@@ -76,9 +76,10 @@ function fetchImages() {
 }
 
 function buildProxerReader( style ) {
+    var title = "[Naver] <a href='"+baseurl+"'>"+ $("table.details tr:eq(0) td:eq(1)").text() + "</a> (Chapter " + baseurl.split("/")[5] + ")";
     $("#main > *").remove();
     
-    $("<div id='panel'> <div id='breadcrumb'>Hier könnte ihr Titel stehen</div> <div id='navigation'> <span id='curPages'></span> <span id='pages'></span> <span id='allPages'></span> </div> <div id='readers' style='position:relative;float:right;margin:0 20px;font-size: 20px;'><a style='margin:5px;' class='menu"+( ( style === "slide" )?" active":"" )+"' data-style='slide' title='Standardreader' href='javascript:;'><i class='fa fa-arrows-h'></i></a><a style='margin:5px;' class='menu"+( ( style === "slide" )?"":" active" )+"' data-style='longstrip' title='Longstrip-Reader' href='javascript:;'><i class='fa fa-arrows-v'></i></a> </div> <div style='clear:both'></div> </div> <div id='reader' align='center'> <a id='readerLink' href='javascript:;'> <img id='chapterImage' /> </a </div> ").appendTo("#main");
+    $("<div id='panel'> <div id='breadcrumb'>"+title+"</div> <div id='navigation'> <span id='curPages'></span> <span id='pages'></span> <span id='allPages'></span> </div> <div id='readers' style='position:relative;float:right;margin:0 20px;font-size: 20px;'><a style='margin:5px;' class='menu"+( ( style === "slide" )?" active":"" )+"' data-style='slide' title='Standardreader' href='javascript:;'><i class='fa fa-arrows-h'></i></a><a style='margin:5px;' class='menu"+( ( style === "slide" )?"":" active" )+"' data-style='longstrip' title='Longstrip-Reader' href='javascript:;'><i class='fa fa-arrows-v'></i></a> </div> <div style='clear:both'></div> </div> <div id='reader' align='center'> <a id='readerLink' href='javascript:;'> <img id='chapterImage' /> </a </div> ").appendTo("#main");
     $("#readers a.menu").on("click", setReader);
     
     $('<link rel="stylesheet" type="text/css" href="/components/com_proxer/css/read/default.css">').appendTo("#main");
