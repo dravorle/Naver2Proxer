@@ -9,6 +9,8 @@
 // @require     https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js
 // @require     https://proxer.me/templates/proxer14/js/jquery-ui-1.10.3.custom.min.js
 // @require     https://proxer.me/templates/proxer14/js/jquery.plugins.js?3
+// @require     CustomSlide.js
+// @require     CustomLongstrip.js
 // @connect     webtoons.com
 // @connect     webtoon-phinf.pstatic.net
 // @grant       GM_xmlhttpRequest
@@ -38,8 +40,8 @@ function run() {
         console.log( "[Naver2Proxer] Offizielles Chapter entdeckt." );
         //Funktion des Links verändern, bei OnClick Webtoons-Seite laden und in Proxer-Style auf der Website anzeigen
         $("<script> pages = []; baseurl = '"+getCurrentLink().split("?")[0]+"'; current_page = 1; serverurl = ''; nextChapter = '"+$("a.menu:contains('Nächstes Kapitel')").attr("href")+"'; </script>").appendTo("head");
-        $('<script type="text/javascript" src="https://dravorle.de/js/CustomSlide.js"></script>').appendTo("head");
-        $('<script type="text/javascript" src="https://dravorle.de/js/CustomLongstrip.js"></script>').appendTo("head");
+        //$('<script type="text/javascript" src="CustomSlide.js"></script>').appendTo("head");
+        //$('<script type="text/javascript" src="CustomLongstrip.js"></script>').appendTo("head");
 
         $("#chapter_next").on("click", handleNaverClick );
         
