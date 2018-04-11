@@ -106,7 +106,7 @@ function changePageSlide(page, init) {
         window.location = nextChapter + '#top';
     } else if (page > 0) {
        var p = page - 1;
-        var preLoad = new Array();
+        //var preLoad = new Array();
         for (i = 0; i < pages.length; i++) {
 
             if ((i < p && i + 3 > p) || (i > p && i - 3 < p) || i === p) {
@@ -116,22 +116,22 @@ function changePageSlide(page, init) {
                 } else {
                     $('.number_' + i).removeClass('current_page');
                 }
-                preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
+                //preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
             } else {
                 if ((i > p && i - 6 < p)) {
-                    preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
+                    //preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
                 }
                 $('.number_' + i).css('display', 'none');
             }
         }
 
         //$('#chapterImage').css('opacity', '0');
-        $('#chapterImage').attr('src', phpUrldecode(pages[page - 1][0]));
+        $('#chapterImage').attr('src', phpUrldecode(pages[page - 1][3]));
 
         resizePageSlide(page - 1);
 
         current_page = page;
-        imagePreloadSlide(preLoad);
+        //imagePreloadSlide(preLoad);
 
         $(document).scrollTo($('#top'), 0);
     } else {

@@ -5,6 +5,7 @@
 // @include     https://proxer.me/chapter/*
 // @supportURL  https://proxer.me/forum/283/384751
 // @updateURL   https://github.com/dravorle/Naver2Proxer/raw/master/Naver2Proxer.user.js
+// @version     1.4: Switched from using the Preloader-Function to storing the data in a blob on first retrieval
 // @version     1.3.1: Few more fixes
 // @version     1.3: Fixed Event assigning for Custom Reader Functions
 // @version     1.2.1: Fixed Pages loading more than once
@@ -24,13 +25,13 @@
 // @run-at      document-end
 // ==/UserScript==
 
+var MaxPages, CurrPages;
+
 run();
-$(document).ajaxSuccess( function() {
-    run();
-});
 
 function run() {
     unsafeWindow.jQuery( ".inner a.menu[data-ajax]" ).off("click"); //Vorerst muss unsafeWindow genutzt werden, da ich Standard-Eventhandler unsubscriben muss, eine Funktion dafür wurde angefragt, bis dahin muss allerdings damit vorlieb genommen werden
+    $('<meta name="referrer" content="same-origin">').appendTo("head");
     
     if( $(".inner").text().indexOf("Dieses Kapitel ist leider noch nicht verfügbar :/") > -1 ) {
         console.log( "[Naver2Proxer] Kein Chapter verfügbar." );
@@ -50,8 +51,7 @@ function run() {
         
         $(document).on("keydown", function(e) {
             var code = e.keyCode || e.which;
-            if ( code === 39 || code === 68 )
-            {
+            if ( code === 39 || code === 68 ) {
                 handleNaverClick(e);
             }
         });
@@ -80,14 +80,17 @@ function fetchImages() {
     GM_xmlhttpRequest({
         method: "GET",
         url: $("#chapter_next").attr("href"),
+        headers: {
+            referer: $("#chapter_next").attr("href")
+        },
         onload: function(response) {
-            $(response.responseText.trim()).find("#_imageList img").each( function() {
+            maxPages = $(response.responseText.trim()).find("#_imageList img").length;
+            currPages = 0;
+            $(response.responseText.trim()).find("#_imageList img").each( function(i) {
                 pages.push( [ $(this).data("url"), $(this).attr("height"), $(this).attr("width") ] );
 
-                enablePage( $(this).data("url"), $("#chapter_next").attr("href") );
+                enablePage( $(this).data("url"), i );
             });
-
-            buildProxerReader( get_cookie("manga_reader") );
         }
     });
 }
@@ -114,17 +117,24 @@ function buildProxerReader( style ) {
 }
 
 //Funktion ruft einmalig das Bild auf um es für diese IP freizuschalten, dies wird von Naver benötigt, da das Bild erst dann angezeigt werden kann, wenn es 1x von der Naver-Seite aus aufgerufen wurde
-function enablePage(url, base) {
+function enablePage(url, index) {
     console.log( "Loading Image", url );
     GM_xmlhttpRequest({
-        method: "GET",
+        method: "get",
+        responseType:"blob",
         url: url,
         headers: {
-            referer: base,
-            origin: base
+            referer: url
         },
         onload: function(response) {
-            //Hier eventuell Seite in blob zwischenspeichern, oder so
+            var urlCreator = window.URL || window.webkitURL;
+            pages[index].push( urlCreator.createObjectURL( response.response ) );
+            
+            currPages++;
+            if( currPages === maxPages ) {
+                //Bereit zum starten!
+                buildProxerReader( get_cookie("manga_reader") );
+            }
         }
     });
 }
