@@ -142,11 +142,11 @@ function changePageSlide(page, init) {
 }
 
 function nextPageSlide() {
-    changePageSlide(current_page + 1, false);
+    changePageSlide( +current_page + 1, false);
 }
 
 function prevPageSlide() {
-    changePageSlide(current_page - 1, false);
+    changePageSlide( +current_page - 1, false);
 }
 
 function preloadSlide(loadPages) {
@@ -158,10 +158,7 @@ function preloadSlide(loadPages) {
 }
 
 function finishPreloadSlide( index ) {
-    console.log("Current_Page: " + current_page);
-    console.log("Current_Index: " + (index+1));
     if ( (index + 1) == current_page ) {
-        console.log("Found match");
         $('#chapterImage').attr('src', phpUrldecode(pages[index][3]));
         $('#chapterImage').animate({'opacity': '1.0'}, 800);
     }

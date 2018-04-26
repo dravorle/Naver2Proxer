@@ -5,6 +5,7 @@
 // @include     https://proxer.me/chapter/*
 // @supportURL  https://proxer.me/forum/283/384751
 // @updateURL   https://github.com/dravorle/Naver2Proxer/raw/master/Naver2Proxer.user.js
+// @version     1.5.1: Fixed small calculation error
 // @version     1.5: Switched to using a Preloader-Function to speed up load times
 // @version     1.4: Switched from using the Preloader-Function to storing the data in a blob on first retrieval
 // @version     1.3.1: Few more fixes
