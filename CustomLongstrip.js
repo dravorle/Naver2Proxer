@@ -4,7 +4,7 @@ var scroll = true;
 var counter = 0;
 var gt_key_suggestion_long = 'Verwende W/S bzw. Pfeil oben/unten zum scrollen.<br>' +
         'Doppelklicke auf A/D bzw. Pfeil links/rechts um das Kapitel zu wechseln.<br>' +
-        'DrÃ¼cke am Ende eines Kapitels D/Pfeil rechts, um das nÃ¤chste Kapitel zu erreichen.';
+        'Drücke am Ende eines Kapitels D/Pfeil rechts, um das nächste Kapitel zu erreichen.';
 
 function initLong() {
     $("#readerLink").on("click", function() {
@@ -18,7 +18,7 @@ function initLong() {
         list += '<li><a data-p="'+(i + 1)+'" href="javascript:;">Page ' + (i + 1) + '</a></li>';
         $('#curPages').append('<div class="number number_' + i + '" style="display:none;"><a data-p="'+(i + 1)+'" href="javascript:void(0)">' + (i + 1) + '</a></div> ');
 
-        images += '<img style="display:block;" src="'+pages[i][3]+'" id="chapterImage' + i + '" width="' + Math.min(pages[i][2], $('#reader').width()) + '" height="' +
+        images += '<img style="display:block;" class="unloaded" id="chapterImage' + i + '" width="' + Math.min(pages[i][2], $('#reader').width()) + '" height="' +
                 Math.round(Math.min(pages[i][2], $('#reader').width()) * pages[i][1] / pages[i][2]) + '" />';
     }
     list += '</ul>';
@@ -28,11 +28,11 @@ function initLong() {
     $("#allPages a, #curPages a").on("click", function() {
         changePageLong( $(this).attr("data-p"), false );
     });
-    
+
     $("#reader img").on("click", function() {
         nextChap();
-    });
-
+    });    
+    
     create_message('key_suggestion', 7000, gt_key_suggestion_long);
 
     changePageLong(current_page, true);
@@ -84,7 +84,6 @@ function initLong() {
                 }, 200);
             }
 
-
             if (code === 40 || code === 83)
             {
                 e.preventDefault();
@@ -122,7 +121,7 @@ function initLong() {
             var curHeight = $('#chapterImage' + (current_page - 1)).height();
             var prevHeight = 10000;
             if (current_page - 2 >= 0) {
-                prevHeight = $('#chapterImage' + (current_page - 2)).height()
+                prevHeight = $('#chapterImage' + (current_page - 2)).height();
             }
 
             if (scrollable && (scrolled - position) >= curHeight) {
@@ -156,7 +155,7 @@ function changePageLong(page, init) {
     } else if (page > 0) {
         var p = page - 1;
         
-        //var preLoad = new Array();
+        var preLoad = new Array();
         for (i = 0; i < pages.length; i++) {
             if ((i < p && i + 3 > p) || (i > p && i - 3 < p) || i === p) {
                 $('.number_' + i).css('display', '');
@@ -165,18 +164,16 @@ function changePageLong(page, init) {
                 } else {
                     $('.number_' + i).removeClass('current_page');
                 }
-                //preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
+                preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
             } else {
                 if ((i > p && i - 6 < p)) {
-                    //preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
+                    preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
                 }
                 $('.number_' + i).css('display', 'none');
             }
         }
         
         if (scroll) {
-            //$.scrollTo(jQuery('#chapterImage'+(page-1)).position().top-50,0);
-            //$(document).scrollTop($('#chapterImage'+(page-1)).offset().top-50);
             if (page - 1 !== 0) {
                 window.scrollTo(0, $('#chapterImage' + (page - 1)).offset().top - 50);
                 setTimeout(function () {
@@ -194,18 +191,7 @@ function changePageLong(page, init) {
         scroll = true;
 
         current_page = page;
-        //imagePreloadLong(preLoad);
-
-        /*
-        for (i = 0; i < preLoad.length; i++) {
-            var pre = preLoad[i][0];
-            if ($('#chapterImage' + pre).hasClass("unloaded")) {
-                $('#chapterImage' + pre).removeClass("unloaded");
-                $('#chapterImage' + pre).css('opacity', '1');
-                $('#chapterImage' + pre).attr('src', preLoad[i][1]);
-            }
-        }
-        */
+        preloadLong(preLoad);
     } else {
         changePageLong(1, false);
     }
@@ -224,32 +210,27 @@ function nextChap() {
 }
 
 function nextPageLong() {
-    changePageLong(current_page + 1, false);
+    changePageLong( +current_page + 1, false );
 }
 
 function prevPageLong() {
-    changePageLong(current_page - 1, false);
+    changePageLong( +current_page - 1, false);
 }
 
-function imagePreloadLong(loadPages) {
-    var pageIndex = new Array();
-    var pageImages = new Array();
-    for (i = 0; i < loadPages.length; i++) {
-        pageIndex.push(loadPages[i][0]);
-        pageImages.push(loadPages[i][1]);
-    }
-    jQuery.preload(pageImages, {
-        threshold: 40,
-        enforceCache: true,
-        onComplete: function (data)
-        {
-            var idx = data.index;
-
-            $('.number_' + pageIndex[idx]).addClass('loaded');
-            if (pageIndex[idx] + 1 === current_page) {
-                //$('#chapterImage').animate({'opacity':'1.0'}, 800);
-            }
+function preloadLong(loadPages) {
+    for( var i = 0; i < loadPages.length; i++ ) {
+        if( typeof pages[ loadPages[i][0] ][3] === "undefined" ) {
+            fetch( pages[ loadPages[i][0] ][0], loadPages[i][0], finishPreloadLong );
         }
+    }
+}
 
-    });
+function finishPreloadLong( index ) {
+    $('.number_' + index).addClass('loaded');
+    
+    if ($('#chapterImage' + index).hasClass("unloaded")) {
+        $('#chapterImage' + index).removeClass("unloaded");
+        $('#chapterImage' + index).css('opacity', '1');
+        $('#chapterImage' + index).attr('src', phpUrldecode(pages[index][3]));
+    }
 }

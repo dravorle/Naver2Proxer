@@ -98,15 +98,14 @@ function initSlide() {
 };
 
 function changePageSlide(page, init) {
-
     if (pages.length === 0) {
         alert("Fehler beim Laden des Kapitels. Bitte aktualisiere diese Seite.");
     } else if (page > pages.length) {
         $('#wrapper').css('max-width', '');
         window.location = nextChapter + '#top';
     } else if (page > 0) {
-       var p = page - 1;
-        //var preLoad = new Array();
+        var p = page - 1;
+        var preLoad = new Array();
         for (i = 0; i < pages.length; i++) {
 
             if ((i < p && i + 3 > p) || (i > p && i - 3 < p) || i === p) {
@@ -116,22 +115,25 @@ function changePageSlide(page, init) {
                 } else {
                     $('.number_' + i).removeClass('current_page');
                 }
-                //preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
+                preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
             } else {
                 if ((i > p && i - 6 < p)) {
-                    //preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
+                    preLoad.push(new Array(i, phpUrldecode(pages[i][0])));
                 }
                 $('.number_' + i).css('display', 'none');
             }
         }
 
-        //$('#chapterImage').css('opacity', '0');
-        $('#chapterImage').attr('src', phpUrldecode(pages[page - 1][3]));
+        $('#chapterImage').css('opacity', '0');
+        if( typeof pages[page - 1][3] !== "undefined" ) {
+            $('#chapterImage').attr('src', phpUrldecode(pages[page - 1][3]));
+            $('#chapterImage').animate({'opacity': '1.0'}, 800);
+        }
 
         resizePageSlide(page - 1);
 
         current_page = page;
-        //imagePreloadSlide(preLoad);
+        preloadSlide(preLoad);
 
         $(document).scrollTo($('#top'), 0);
     } else {
@@ -147,27 +149,22 @@ function prevPageSlide() {
     changePageSlide(current_page - 1, false);
 }
 
-function imagePreloadSlide(loadPages) {
-    var pageIndex = new Array();
-    var pageImages = new Array();
-    for (i = 0; i < loadPages.length; i++) {
-        pageIndex.push(loadPages[i][0]);
-        pageImages.push(loadPages[i][1]);
-    }
-    jQuery.preload(pageImages, {
-        threshold: 40,
-        enforceCache: true,
-        onComplete: function (data)
-        {
-            var idx = data.index;
-            
-            $('.number_' + pageIndex[idx]).addClass('loaded');
-            if (pageIndex[idx] + 1 === current_page) {
-                $('#chapterImage').animate({'opacity': '1.0'}, 800);
-            }
+function preloadSlide(loadPages) {
+    for( var i = 0; i < loadPages.length; i++ ) {
+        if( typeof pages[ loadPages[i][0] ][3] === "undefined" ) {
+            fetch( pages[ loadPages[i][0] ][0], loadPages[i][0], finishPreloadSlide );
         }
+    }
+}
 
-    });
+function finishPreloadSlide( index ) {
+    console.log("Current_Page: " + current_page);
+    console.log("Current_Index: " + (index+1));
+    if ( (index + 1) == current_page ) {
+        console.log("Found match");
+        $('#chapterImage').attr('src', phpUrldecode(pages[index][3]));
+        $('#chapterImage').animate({'opacity': '1.0'}, 800);
+    }
 }
 
 function resizePageSlide(id) {
