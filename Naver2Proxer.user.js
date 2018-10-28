@@ -29,6 +29,7 @@
 // ==/UserScript==
 
 var MaxPages, CurrPages;
+var version = "v1.5.2";
 
 run();
 
@@ -43,7 +44,7 @@ function run() {
 
     //Prüfen ob das Chapter ein offizielles Webtoons-Chapter ist
     if( $("#chapter_next").attr("href").indexOf("webtoons.com") > -1 ) {
-        console.log( "[Naver2Proxer] Offizielles Chapter entdeckt." );
+        console.log( "[Naver2Proxer "+version+"] Offizielles Chapter entdeckt." );
         //Funktion des Links verändern, bei OnClick Webtoons-Seite laden und in Proxer-Style auf der Website anzeigen
         $("<script> pages = []; baseurl = '"+getCurrentLink().split("?")[0]+"'; current_page = 1; serverurl = ''; nextChapter = '"+$("a.menu:contains('Nächstes Kapitel')").attr("href")+"'; </script>").appendTo("head");
         
@@ -89,7 +90,8 @@ function fetchImages() {
         method: "GET",
         url: $("#chapter_next").attr("href"),
         headers: {
-            referer: $("#chapter_next").attr("href")
+            referer: $("#chapter_next").attr("href"),
+            origin: $("#chapter_next").attr("href")
         },
         onload: function(response) {
             maxPages = $(response.responseText.trim()).find("#_imageList img").length;
@@ -131,7 +133,8 @@ function fetch( url, index, callback ) {
         responseType: "blob",
         url: url,
         headers: {
-            referer: url
+            referer: url,
+            origin: url
         },
         onload: function(response) {
             var urlCreator = window.URL || window.webkitURL;
