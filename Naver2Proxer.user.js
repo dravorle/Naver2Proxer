@@ -36,7 +36,7 @@ run();
 function run() {
     unsafeWindow.jQuery( ".inner a.menu[data-ajax]" ).off("click"); //Vorerst muss unsafeWindow genutzt werden, da ich Standard-Eventhandler unsubscriben muss, eine Funktion dafür wurde angefragt, bis dahin muss allerdings damit vorlieb genommen werden
     $('<meta name="referrer" content="same-origin">').appendTo("head");
-    
+
     if( $(".inner").text().indexOf("Dieses Kapitel ist leider noch nicht verfügbar :/") > -1 ) {
         console.log( "[Naver2Proxer] Kein Chapter verfügbar." );
         return;
@@ -47,24 +47,24 @@ function run() {
         console.log( "[Naver2Proxer "+version+"] Offizielles Chapter entdeckt." );
         //Funktion des Links verändern, bei OnClick Webtoons-Seite laden und in Proxer-Style auf der Website anzeigen
         $("<script> pages = []; baseurl = '"+getCurrentLink().split("?")[0]+"'; current_page = 1; serverurl = ''; nextChapter = '"+$("a.menu:contains('Nächstes Kapitel')").attr("href")+"'; </script>").appendTo("head");
-        
+
 		if( nextChapter === "undefined" ) {
 			console.log( "[Naver2Proxer] Letztes Chapter erreicht." );
 			nextChapter = $( "#simple-navi a[href]:contains('Kapitel')" ).attr( "href" ).replace( "list", "relation" );
 		}
-		
+
         $("#chapter_next").on("click", handleNaverClick );
-        
+
         unsafeWindow.jQuery(document).off("keydown"); //Vorerst muss unsafeWindow genutzt werden, da ich Standard-Eventhandler unsubscriben muss, eine Funktion dafür wurde angefragt, bis dahin muss allerdings damit vorlieb genommen werden
         //removeEventHandler( document, "keydown" ); //Funktion von Enes angefragt
-        
+
         $(document).on("keydown", function(e) {
             var code = e.keyCode || e.which;
             if ( code === 39 || code === 68 ) {
                 handleNaverClick(e);
             }
         });
-        
+
         if( location.href.indexOf("?startRead") > -1 ) {
             $("#chapter_next").trigger("click");
             history.pushState(null, null, baseurl);
@@ -74,13 +74,13 @@ function run() {
 
 function handleNaverClick(e) {
     e.preventDefault();
-    
+
     if( $("#loading").length > 0 ) {
         return;
     }
-    
+
     $("body").append('<div id="loading" class="customBubble" style="display:inline;"></div>');
-    
+
     fetchImages();
 }
 
@@ -91,7 +91,8 @@ function fetchImages() {
         url: $("#chapter_next").attr("href"),
         headers: {
             referer: $("#chapter_next").attr("href"),
-            origin: $("#chapter_next").attr("href")
+            origin: $("#chapter_next").attr("href"),
+            "X-Requested-With": $("#chapter_next").attr("href")
         },
         onload: function(response) {
             maxPages = $(response.responseText.trim()).find("#_imageList img").length;
@@ -99,7 +100,7 @@ function fetchImages() {
             $(response.responseText.trim()).find("#_imageList img").each( function(i) {
                 pages.push( [ $(this).data("url"), $(this).attr("height"), $(this).attr("width") ] );
             });
-            
+
             buildProxerReader( get_cookie("manga_reader") );
         }
     });
@@ -108,10 +109,10 @@ function fetchImages() {
 function buildProxerReader( style ) {
     var title = "[Naver] <a href='"+baseurl+"'>"+ $("table.details tr:eq(0) td:eq(1)").text() + "</a> (Chapter " + baseurl.split("/")[5] + ")";
     $("#main > *").remove();
-    
+
     $("<div id='panel'> <div id='breadcrumb'>"+title+"</div> <div id='navigation'> <span id='curPages'></span> <span id='pages'></span> <span id='allPages'></span> </div> <div id='readers' style='position:relative;float:right;margin:0 20px;font-size: 20px;'><a style='margin:5px;' class='menu"+( ( style === "slide" )?" active":"" )+"' data-style='slide' title='Standardreader' href='javascript:;'><i class='fa fa-arrows-h'></i></a><a style='margin:5px;' class='menu"+( ( style === "slide" )?"":" active" )+"' data-style='longstrip' title='Longstrip-Reader' href='javascript:;'><i class='fa fa-arrows-v'></i></a> </div> <div style='clear:both'></div> </div> <div id='reader' align='center'> <a id='readerLink' href='javascript:;'> <img id='chapterImage' /> </a </div> ").appendTo("#main");
     $("#readers a.menu").on("click", setReader);
-    
+
     $('<link rel="stylesheet" type="text/css" href="/components/com_proxer/css/read/default.css">').appendTo("#main");
 
     history.pushState(null, null, window.location.href);
@@ -134,12 +135,12 @@ function fetch( url, index, callback ) {
         url: url,
         headers: {
             referer: url,
-            origin: url
+            origin: url,
+            "X-Requested-With": url
         },
         onload: function(response) {
             var urlCreator = window.URL || window.webkitURL;
             pages[index].push( urlCreator.createObjectURL( response.response ) );
-            
             callback(index);
         }
     });
@@ -147,6 +148,6 @@ function fetch( url, index, callback ) {
 
 function setReader() {
     set_cookie('manga_reader', $(this).attr("data-style"), cookie_expire);
-    
+
     location.href = getCurrentLink() + "startRead";
 }
