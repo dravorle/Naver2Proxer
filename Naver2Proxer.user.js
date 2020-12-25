@@ -3,6 +3,7 @@
 // @author      Dravorle
 // @description Ermöglicht es weiterhin auch lizenzierte Naver-Manga direkt in Proxer zu lesen
 // @include     https://proxer.me/chapter/*
+// @include     https://proxer.net/chapter/*
 // @supportURL  https://proxer.me/forum/283/384751
 // @updateURL   https://github.com/dravorle/Naver2Proxer/raw/master/Naver2Proxer.user.js
 // @version     1.5.3: Added "AgeGatePass"-Cookie to the request in order to access the website
