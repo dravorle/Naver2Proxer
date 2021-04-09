@@ -5,17 +5,7 @@
 // @include     https://proxer.me/chapter/*
 // @supportURL  https://proxer.me/forum/283/384751
 // @updateURL   https://github.com/dravorle/Naver2Proxer/raw/master/Naver2Proxer.user.js
-// @version     1.5.3: Added "AgeGatePass"-Cookie to the request in order to access the website
-// @history     1.5.2: Fixed error when current chapter is the last one of the manga.
-// @history     1.5.1: Fixed small calculation error
-// @history     1.5: Switched to using a Preloader-Function to speed up load times
-// @history     1.4: Switched from using the Preloader-Function to storing the data in a blob on first retrieval
-// @history     1.3.1: Few more fixes
-// @history     1.3: Fixed Event assigning for Custom Reader Functions
-// @history     1.2.1: Fixed Pages loading more than once
-// @history     1.2: Fixed Event Handling on Chapter-Page
-// @history     1.1: Small fixes
-// @history     1.0: First Release
+// @version     1.5.4: Fixed Cookies to pass "AgeGate"
 // @require     https://proxer.me/templates/proxer14/js/jquery-1.9.1.min.js
 // @require     https://proxer.me/templates/proxer14/js/jquery-ui-1.10.3.custom.min.js
 // @require     https://proxer.me/templates/proxer14/js/jquery.plugins.js?3
@@ -94,7 +84,7 @@ function fetchImages() {
             referer: $("#chapter_next").attr("href"),
             origin: $("#chapter_next").attr("href"),
             "X-Requested-With": $("#chapter_next").attr("href"),
-	    cookie: "AgeGatePass=true"
+	    cookie: "pagGDPR=true;rstagGDPR_DE=true;"
         },
         onload: function(response) {
             maxPages = $(response.responseText.trim()).find("#_imageList img").length;
